@@ -40,7 +40,7 @@ const handleClick = () => {
 .general-btn {
   color: var(--c-white);
   border-radius: 60px;
-  width: 131px;
+  width: auto;
   height: 44px;
   border: 0;
   font-size: 18px;

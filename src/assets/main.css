@@ -4,10 +4,10 @@
   /* max-width: 1280px; */
   margin: 0 auto;
   padding: 0;
-  
+
   font-size: 15px;
   line-height: 140%;
-  font-weight: "Lato", sans-serif;
+  font-weight: 'Lato', sans-serif;
 }
 
 main {
@@ -19,12 +19,33 @@ main {
   text-align: center;
   gap: 15px;
 }
-h1{
+h1 {
   font-weight: 700;
 }
-h2{
+h2 {
   font-weight: 500;
+}
+.general-btn {
+  color: var(--c-white);
+  border-radius: 60px;
+  width: 131px;
+  height: 44px;
+  border: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s ease-in-out;
+}
 
+.general-btn:hover {
+  cursor: pointer;
+}
+.btn-icon {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
 }
 /* @media (hover: hover) {
   a:hover {
