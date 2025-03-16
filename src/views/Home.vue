@@ -1,7 +1,5 @@
 <script setup>
 import GeneralBtn from '@/components/Buttons/general.vue';
-
-
 </script>
 
 <template>
@@ -12,19 +10,12 @@ import GeneralBtn from '@/components/Buttons/general.vue';
     </div>
     <h1> Welcome to Pokédex</h1>
     <h2>The digital encyclopedia created by Professor Oak is an invaluable tool to Trainers in the Pokémon world.</h2>
-    <GeneralBtn title="Get started"></GeneralBtn>
+    <GeneralBtn title="Get started" to="/pokedex"></GeneralBtn>
   </main>
 </template>
+
 <style scoped>
-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  justify-content: center; 
-  height: 100vh; 
-  text-align: center; 
-  /* padding: 20px;  */
-}
+
 .image-container {
   position: relative;
   width: 325px; 
