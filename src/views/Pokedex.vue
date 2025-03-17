@@ -18,8 +18,8 @@ const buscador = ref('')
 const pokemones = ref([])
 const showFavorites = ref(false);
 const showModal = ref(false);
-const selectedPokemon = ref(null);
-const infoPokemonSelected = ref([])
+
+const infoPokemonSelected = ref({})
 
 let timeout = null;
 
@@ -31,11 +31,12 @@ const searchPokemon = async (pokemonName = null) => {
 
   try {
     const data = await query({ url: urlTo });
-    if (pokemonName) {
-      infoPokemonSelected.value = data;
-    } else {
+    if (pokemonName == null) {
       pokemones.value = data.results;
       emptyList.value = pokemones.value.length === 0;
+    } else {
+      infoPokemonSelected.value = data;
+      console.log("la data", infoPokemonSelected)  
     }
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -57,7 +58,7 @@ const filteredPokemonList = computed(() => {
 });
 
 const openPokemonModal = (pokemon) => {
-  selectedPokemon.value = pokemon;
+  infoPokemonSelected.value = {};
   searchPokemon(pokemon)
   showModal.value = true;
 };
@@ -86,12 +87,12 @@ onMounted(() => {
       </h2>
       <General title="Go back Home" to="/"></General>
     </div>
-    <div v-else>
+    <div v-else class="pokemon-list-container">
 
       <PokemonList :list="filteredPokemonList" @openModal="openPokemonModal"></PokemonList>
-      <PokemonCard v-if="showModal" :info="pokemones" @close="showModal = false" />
+      <PokemonCard v-if="showModal && infoPokemonSelected" :info="infoPokemonSelected" @close="showModal = false" />
       <footer class="footer">
-        <div class="footer-content">
+
           <button class="general-btn" @click="showFavorites = false"
             :style="{ backgroundColor: !showFavorites ? 'var(--c-red)' : 'var(--c-black-soft)' }">
             <span class="btn-icon">
@@ -109,7 +110,6 @@ onMounted(() => {
           </button>
 
 
-        </div>
       </footer>
     </div>
   </div>
@@ -124,27 +124,32 @@ onMounted(() => {
   min-height: 100vh;
   background-color: var(--c-white-mute);
   gap: 20px;
+  padding: 10px;
+  width: 100%;
 }
-
 
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30%;
   min-height: 60px;
   position: relative;
   margin-top: 20px;
+  width: 30%;
 }
-
-
+.pokemon-list-container {
+  width: 100vw; 
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .icon {
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
   user-select: none;
-  cursor: pointer;
 }
 
 .input {
@@ -162,14 +167,9 @@ onMounted(() => {
   font-size: 16px;
 }
 
-.empty-message {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-
-  text-align: center;
+.pokemon-list {
+  width: 100%;
+  max-width: 400px; 
 }
 
 .footer {
@@ -183,12 +183,39 @@ onMounted(() => {
   position: fixed;
   bottom: 0;
   left: 0;
+  padding: 10px;
+  gap:15px
 }
 
-.footer-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+
+@media (max-width: 768px) {
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center; 
+    width: 100%;
+    padding: 10px;
+  }
+  .container {
+    width: 100%;
+    max-width: 400px; 
+  }
+  .pokemon-list {
+    width: 100%;
+    max-width: 400px;
+    text-align: center; 
+  }
+
+  .pokemon-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer {
+    width: 100%;
+    justify-content: center;
+  }
 }
+
 </style>

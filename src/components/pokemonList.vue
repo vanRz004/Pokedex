@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePokemonStore } from '@/stores/pokemon';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import Favorite from './Buttons/favorite.vue';
 const props = defineProps(['list']);
 const pokemonStore = usePokemonStore();
 const router = useRouter();
@@ -13,9 +14,6 @@ const toggleFavorite = (pokemon) => {
   pokemonStore.toggleFavorite(pokemon);
 };
 
-
-
-
 </script>
 <template>
   <div class="pokemon-list">
@@ -24,11 +22,7 @@ const toggleFavorite = (pokemon) => {
         <span @click="$emit('openModal', pokemon.name)" class="pokemon-name">
           {{ pokemon.name }}
         </span>
-
-        <button @click="toggleFavorite(pokemon)" class="btn-fav">
-          <FontAwesomeIcon :icon="['fas', 'star']" class="favorite-icon"
-            :style="{ color: pokemonStore.isFavorite(pokemon.name) ? 'var(--c-yellow)' : 'var(--c-black-mute)' }" />
-        </button>
+        <Favorite :pokemon="pokemon" />
       </li>
     </ul>
   </div>
@@ -37,16 +31,19 @@ const toggleFavorite = (pokemon) => {
 
 <style scoped>
 .pokemon-list {
-  width: 30%;
+  width: 100vw;
+  max-width: 420px;
+  min-width: 30vw;
 }
 
 .pokemon-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px;
+  padding: 8px;
   border-radius: 5px;
   margin-top: 5px;
+  width: 100%;
   background-color: var(--c-white);
 }
 
@@ -56,21 +53,27 @@ const toggleFavorite = (pokemon) => {
   text-transform: capitalize;
 }
 
-.favorite-icon {
-  font-size: 20px;
+@media (max-width: 768px) {
+  .pokemon-list {
+    width: 90%;
+    max-width: 100%;
+  }
 
-  cursor: pointer;
+  .pokemon-item {
+    padding: 6px;
+    font-size: 14px;
+  }
 }
 
-.btn-fav {
-  border: 0;
-  color: var(--c-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  border: 0;
+@media (max-width: 480px) {
+  .pokemon-list {
+    width: 100%;
+    max-width: 100%;
+  }
+  .pokemon-item {
+    font-size: 12px;
+    padding: 4px;
+    text-align: center;
+  }
 }
 </style>

@@ -40,4 +40,5 @@ import GeneralBtn from '@/components/Buttons/general.vue';
   position: absolute;
   z-index: 2; 
 }
+
 </style>
