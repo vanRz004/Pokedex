@@ -10,8 +10,8 @@ const copyId = (pokemon) => {
   const data = `Name: ${pokemon.name}, Weight: ${pokemon.weight}, Types: ${pokemon.types?.map(t => t.type.name).join(', ')}`;
   copied.value = true;
   navigator.clipboard.writeText(data);
+  setTimeout(() => copied.value = false, 2000);
 }
-setTimeout(() => copied.value = false, 2000);
 </script>
 
 <template>
