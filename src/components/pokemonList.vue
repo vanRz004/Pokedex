@@ -1,44 +1,39 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { usePokemonStore } from '@/stores/pokemon'; // Store de Vue
+import { usePokemonStore } from '@/stores/pokemon';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 const props = defineProps(['list']);
 const pokemonStore = usePokemonStore();
 const router = useRouter();
 
 const pokemonList = computed(() => props.list);
-const addFavorite = (pokemon) => {
-  pokemonStore.addFavorite(pokemon);
+const infoCard = ref()
+const toggleFavorite = (pokemon) => {
+  pokemonStore.toggleFavorite(pokemon);
 };
 
 
-const goToPokemon = (pokemonName) => {
-  router.push(`/pokemon/${pokemonName}`);
-};
 
 
 </script>
-
 <template>
   <div class="pokemon-list">
     <ul>
       <li v-for="pokemon in pokemonList" :key="pokemon.name" class="pokemon-item">
-        <span @click="goToPokemon(pokemon.name)" class="pokemon-name">
+        <span @click="$emit('openModal', pokemon.name)" class="pokemon-name">
           {{ pokemon.name }}
         </span>
 
-        <button @click="addFavorite(pokemon)" class="btn-fav">
-          <FontAwesomeIcon 
-            :icon="['fas', 'star']"
-            class="favorite-icon"
-            :style="{ color: pokemonStore.isFavorite(pokemon.name) ?  'var(--c-yellow)' : 'var(--c-black-mute)' }"
-          />
+        <button @click="toggleFavorite(pokemon)" class="btn-fav">
+          <FontAwesomeIcon :icon="['fas', 'star']" class="favorite-icon"
+            :style="{ color: pokemonStore.isFavorite(pokemon.name) ? 'var(--c-yellow)' : 'var(--c-black-mute)' }" />
         </button>
       </li>
     </ul>
   </div>
 </template>
+
 
 <style scoped>
 .pokemon-list {
@@ -66,13 +61,14 @@ const goToPokemon = (pokemonName) => {
 
   cursor: pointer;
 }
-.btn-fav{
+
+.btn-fav {
   border: 0;
   color: var(--c-white);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius:50%;
+  border-radius: 50%;
   width: 44px;
   height: 44px;
   border: 0;

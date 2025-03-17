@@ -8,6 +8,7 @@ import { usePokemonStore } from '@/stores/pokemon';
 import PokemonList from '@/components/pokemonList.vue';
 import Loader from './Loader.vue';
 import General from '@/components/Buttons/general.vue';
+import PokemonCard from '@/components/pokemonCard.vue';
 
 const pokemonStore = usePokemonStore();
 
@@ -16,37 +17,52 @@ const emptyList = ref(false)
 const buscador = ref('')
 const pokemones = ref([])
 const showFavorites = ref(false);
+const showModal = ref(false);
+const selectedPokemon = ref(null);
+const infoPokemonSelected = ref([])
 
 let timeout = null;
 
-const searchPokemon = async () => {
-  let urlTo = buscador.value.trim() ? `/${buscador.value.toLowerCase()}` : '';
+const searchPokemon = async (pokemonName = null) => {
+  let urlTo = pokemonName ? `/${pokemonName.toLowerCase()}` : buscador.value.trim() ? `/${buscador.value.toLowerCase()}` : '';
 
   loading.value = true;
+  emptyList.value = false;
+
   try {
     const data = await query({ url: urlTo });
-    pokemones.value = data.results;
-
+    if (pokemonName) {
+      infoPokemonSelected.value = data;
+    } else {
+      pokemones.value = data.results;
+      emptyList.value = pokemones.value.length === 0;
+    }
   } catch (error) {
     if (error instanceof AxiosError) {
       console.error(error);
-      emptyList.value = true
+      emptyList.value = true;
     }
   } finally {
     loading.value = false;
   }
 };
 
+
+
 const filteredPokemonList = computed(() => {
+  const searchTerm = buscador.value.toLowerCase().trim();
   return showFavorites.value
-    ? pokemonStore.favorites
-    : pokemones.value;
+    ? pokemonStore.favorites.filter(pokemon => pokemon.name.includes(searchTerm))
+    : pokemones.value.filter(pokemon => pokemon.name.includes(searchTerm));
 });
-watch(buscador, () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(() => {
-    searchPokemon();
-  }, 500);
+
+const openPokemonModal = (pokemon) => {
+  selectedPokemon.value = pokemon;
+  searchPokemon(pokemon)
+  showModal.value = true;
+};
+watch(filteredPokemonList, (newList) => {
+  emptyList.value = newList.length === 0 && !loading.value;
 });
 onMounted(() => {
   searchPokemon();
@@ -72,7 +88,8 @@ onMounted(() => {
     </div>
     <div v-else>
 
-      <PokemonList :list="filteredPokemonList"></PokemonList>
+      <PokemonList :list="filteredPokemonList" @openModal="openPokemonModal"></PokemonList>
+      <PokemonCard v-if="showModal" :info="pokemones" @close="showModal = false" />
       <footer class="footer">
         <div class="footer-content">
           <button class="general-btn" @click="showFavorites = false"
